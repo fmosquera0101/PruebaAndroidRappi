@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Prueba Android Rappi</string>
+    <string name="base_url">https://api.themoviedb.org/</string>
+    <string name="api_key">0756d8d5f0c315e4c6e8a34430abfff1</string>
 </resources>
