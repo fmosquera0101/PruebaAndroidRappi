@@ -2,7 +2,7 @@ package co.com.fmosquera0101.pruebaandroidrappi.services;
 
 public class EnumSortBy {
 
-    enum SortBy {
+    public enum SortBy {
         RELEASE_DATE_ASCENDING("release_date.asc"),
         RELEASE_DATE_DESCENDING("release_date.desc");
         String value;

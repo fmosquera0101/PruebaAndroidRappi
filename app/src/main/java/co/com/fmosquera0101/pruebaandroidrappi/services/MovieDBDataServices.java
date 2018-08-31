@@ -1,5 +1,7 @@
 package co.com.fmosquera0101.pruebaandroidrappi.services;
 
+import java.util.List;
+
 import co.com.fmosquera0101.pruebaandroidrappi.model.Configuration;
 import co.com.fmosquera0101.pruebaandroidrappi.model.Movie;
 import co.com.fmosquera0101.pruebaandroidrappi.model.Movies;
@@ -9,7 +11,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface ThemovieDbServices {
+public interface MovieDBDataServices {
 
 
     @GET("/3/discover/movie")
@@ -20,4 +22,7 @@ public interface ThemovieDbServices {
     @Headers("Cache-Control: public, max-stale=2419200")
     @GET("/3/configuration")
     Call<Configuration> getConfiguration();
+
+    @GET("/3/discover/movie")
+    Call<Movies> getMovies();
 }

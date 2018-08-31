@@ -18,6 +18,7 @@ import java.util.List;
         "backdrop_path",
         "budget",
         "genres",
+        "genre_ids",
         "homepage",
         "id",
         "imdb_id",
@@ -42,13 +43,16 @@ public class Movie {
     public boolean adult;
 
     @JsonProperty("backdrop_path")
-    public String backdrop_path;
+    public String backdropPath;
 
     @JsonProperty("budget")
     public int budget;
 
     @JsonProperty("genres")
     public List<Genre> genres = null;
+
+    @JsonProperty("genre_ids")
+    public List<Integer> genresIds = null;
 
     @JsonProperty("homepage")
     public String homepage;
