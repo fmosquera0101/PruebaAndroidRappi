@@ -16,7 +16,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/image_view_movie"
+            android:id="@+id/image_view_movie_movie_preview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
@@ -30,41 +30,35 @@
             android:layout_alignParentRight="true"
             >
 
-            <TextView
-                android:id="@+id/text_view_popularity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:drawablePadding="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="10dp"
-                android:layout_gravity="center"
-                android:textStyle="bold"
-                android:textColor="@android:color/white"
-                android:text="10"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                android:drawableLeft="@drawable/ic_stars_black_24dp"
-
-
-                />
-
-
         </FrameLayout>
 
         <FrameLayout
             android:id="@+id/image_view_frame_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/image_view_movie"
+            android:layout_alignBottom="@id/image_view_movie_movie_preview"
             >
+            <TextView
+                android:id="@+id/text_view_popularity_movie_preview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:text="10"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:drawableLeft="@drawable/ic_stars_black_24dp"
+
+                />
+
 
             <TextView
-                android:id="@+id/text_view_titile_movie"
+                android:id="@+id/text_view_titile_movie_movie_preview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                 android:textSize="25sp"
                 android:padding="16dp"
+                android:textColor="@android:color/white"
                 android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
 
 

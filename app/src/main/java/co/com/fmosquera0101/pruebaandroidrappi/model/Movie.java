@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -36,9 +37,10 @@ import java.util.List;
         "title",
         "video",
         "vote_average",
-        "vote_count"
+        "vote_count",
+        "belongs_to_collection"
 })
-public class Movie {
+public class Movie implements Serializable{
     @JsonProperty("adult")
     public boolean adult;
 
@@ -113,6 +115,9 @@ public class Movie {
 
     @JsonProperty("vote_count")
     public int voteCount;
+
+    @JsonProperty("belongs_to_collection")
+    public BelongToCollection  belongsToCollection;
 
 
 

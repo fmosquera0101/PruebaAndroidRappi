@@ -1,6 +1,7 @@
 package co.com.fmosquera0101.pruebaandroidrappi;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -41,13 +42,23 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     @Override
     public void onBindViewHolder(@NonNull MovieAdapterHolder holder, int position) {
-        Movie movie = movieList.get(position);
+        final Movie movie = movieList.get(position);
+
         Glide.with(context).load(getImagePathUrl(movie)).apply(RequestOptions.centerCropTransform())
                 .transition(withCrossFade())
                 .into(holder.image_view_movie);
         holder.text_view_popularity.setText(String.valueOf(movie.popularity));
         holder.text_view_titile_movie.setText(movie.title);
 
+        holder.image_view_movie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, MovieDetail.class);
+                movie.posterPath = getImagePathUrl(movie);
+                intent.putExtra("Movie", movie);
+                context.startActivity(intent);
+            }
+        });
 
     }
 
@@ -64,9 +75,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         public MovieAdapterHolder(View itemView) {
             super(itemView);
             this.itemView = itemView;
-            this.image_view_movie = itemView.findViewById(R.id.image_view_movie);
-            this.text_view_popularity = itemView.findViewById(R.id.text_view_popularity);
-            this.text_view_titile_movie = itemView.findViewById(R.id.text_view_titile_movie);
+            this.image_view_movie = itemView.findViewById(R.id.image_view_movie_movie_preview);
+            this.text_view_popularity = itemView.findViewById(R.id.text_view_popularity_movie_preview);
+            this.text_view_titile_movie = itemView.findViewById(R.id.text_view_titile_movie_movie_preview);
 
         }
     }
