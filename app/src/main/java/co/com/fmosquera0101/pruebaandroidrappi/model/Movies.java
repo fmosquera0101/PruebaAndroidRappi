@@ -11,7 +11,8 @@ import java.util.List;
         "page",
         "results",
         "total_results",
-        "total_pages"
+        "total_pages",
+        "dates"
 })
 public class Movies {
 
@@ -23,5 +24,8 @@ public class Movies {
     public int totalResults;
     @JsonProperty("total_pages")
     public int totalPages;
+    @JsonProperty("dates")
+    public Dates dates;
+
 
 }
