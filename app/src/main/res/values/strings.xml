@@ -7,8 +7,9 @@
     <string name="language">Languages</string>
     <string name="overview">Overview</string>
     <string name="originalLang">Original Language</string>
+    <string name="network_error">No Network Connection Available! Please Check Your Connection Settings.</string>
     <string-array name="filter_movies">
-        <item>Popuar</item>
+        <item>Popular</item>
         <item>Top rated</item>
         <item>Upcoming</item>
     </string-array>

@@ -41,6 +41,7 @@ import java.util.List;
         "belongs_to_collection"
 })
 public class Movie implements Serializable{
+
     @JsonProperty("adult")
     public boolean adult;
 
@@ -118,6 +119,7 @@ public class Movie implements Serializable{
 
     @JsonProperty("belongs_to_collection")
     public BelongToCollection  belongsToCollection;
+
 
 
 
