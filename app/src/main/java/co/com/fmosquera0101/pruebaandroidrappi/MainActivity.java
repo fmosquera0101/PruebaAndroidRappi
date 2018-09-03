@@ -30,6 +30,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -83,12 +84,31 @@ public class MainActivity extends AppCompatActivity {
             spinnerSetOnItemSelectedListener();
 
         }else{
-            progressBar.setVisibility(View.INVISIBLE);
-            textViewErroNetWork.setVisibility(View.VISIBLE);
-            Toast.makeText(context, "No hay internet", Toast.LENGTH_SHORT).show();
+
             movideDBViewModel.getListMovieDBOffline().observe(this, new Observer<List<MovieDBOffline>>() {
                 @Override
                 public void onChanged(@Nullable List<MovieDBOffline> movieDBOfflines) {
+                    if(null != movieDBOfflines && movieDBOfflines.size() > 0){
+                        List<Movie> listMovie = new ArrayList<Movie>();
+                        for (MovieDBOffline movieDBOffline: movieDBOfflines){
+                            Movie movie = new Movie();
+                            movie.id = movieDBOffline.getId();
+                            movie.title = movieDBOffline.getTitle();
+                            movie.originalLanguage =movieDBOffline.getOriginalLanguage();
+                            movie.overview = movieDBOffline.getOverview();
+                            movie.popularity = Float.parseFloat(movieDBOffline.getPopularity());
+                            movie.posterPath = movieDBOffline.getPosterPath();
+                            //movie.genres = movieDBOffline.getGenres();
+                            movie.runtime = Integer.parseInt(movieDBOffline.getDuration());
+                            listMovie.add(movie);
+
+                        }
+                        setAdapterRecyclerView(listMovie);
+                    }else {
+                        progressBar.setVisibility(View.INVISIBLE);
+                        textViewErroNetWork.setVisibility(View.VISIBLE);
+                    }
+
                 }
             });
 
@@ -144,14 +164,14 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<Movies> call, Response<Movies> response) {
 
                 movies = response.body().movies;
-                movieAdapter = new MovieAdapter(movies, images,context);
-                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
-                recyclerView.setLayoutManager(layoutManager);
-                recyclerView.setAdapter(movieAdapter);
+                setAdapterRecyclerView(movies);
                 progressBar.setVisibility(View.INVISIBLE);
+
+
                 for (Movie movie: movies) {
-                    MovieDBOffline movieDBOffline = new MovieDBOffline(
+                    MovieDBOffline movieDBOffline = new MovieDBOffline(0,
                             movie.id,
+                            movie.title,
                             movie.originalLanguage,
                             movie.overview,
                             String.valueOf(movie.popularity),
@@ -160,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
                             "test",
                             String.valueOf(movie.runtime)
                     );
-                  //  movideDBViewModel.insert(movieDBOffline);
+                    movideDBViewModel.insert(movieDBOffline);
                 }
 
             }
@@ -192,6 +212,13 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Call<Configuration> call, Throwable t) {
             }
         });
+    }
+
+    private void setAdapterRecyclerView(List<Movie> movies) {
+        movieAdapter = new MovieAdapter(movies, images,context);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(movieAdapter);
     }
 
     private String getReleaseDate() {

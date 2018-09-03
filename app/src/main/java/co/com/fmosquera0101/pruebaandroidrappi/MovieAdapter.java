@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.io.File;
@@ -51,14 +52,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public void onBindViewHolder(@NonNull MovieAdapterHolder holder, int position) {
         final Movie movie = movieList.get(position);
-
-        Glide.with(context).load(getImagePathUrl(movie)).apply(RequestOptions.centerCropTransform())
+        Glide.with(context).load(getImagePathUrl(movie))
+                .apply(RequestOptions.centerCropTransform())
                 .transition(withCrossFade())
                 .into(holder.image_view_movie);
+
         holder.text_view_popularity.setText(String.valueOf(movie.popularity));
         holder.text_view_titile_movie.setText(movie.title);
-
-        new DownLoadImageAsycTask(movie.id).execute(getImagePathUrl(movie));
 
         holder.image_view_movie.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,53 +110,4 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         return strbImagePathUrl.toString();
     }
 
-    private class DownLoadImageAsycTask extends AsyncTask<String, Void, Bitmap> {
-        private String idMovie;
-
-        public DownLoadImageAsycTask(String idMovie){
-            this.idMovie = idMovie;
-        }
-
-        private Bitmap downLoadImageBitMap(String imageUrl){
-            Bitmap bitmap = null;
-            try{
-                InputStream inputStream = new URL(imageUrl).openStream();
-                bitmap = BitmapFactory.decodeStream(inputStream);
-                inputStream.close();
-            }catch (Exception e){
-                Log.d("downLoadImageBitMap", "Ocurrio un error");
-                e.printStackTrace();
-            }
-
-            return bitmap;
-
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... params) {
-            return downLoadImageBitMap(params[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            super.onPostExecute(bitmap);
-            saveImageToStorage(context.getApplicationContext(), bitmap, idMovie+".png" );
-        }
-    }
-
-    private void saveImageToStorage(Context context, Bitmap bitmap, String imageName){
-        FileOutputStream fileOutputStream;
-        try {
-            fileOutputStream = context.openFileOutput(imageName, Context.MODE_PRIVATE);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
-            fileOutputStream.close();
-            File file            = context.getApplicationContext().getFileStreamPath(imageName);
-            String imageFullPath = file.getAbsolutePath();
-            Log.d("imageFullPath_", imageFullPath);
-        }catch (Exception e){
-            Log.d("saveImageToStorage", "Ocurrio un error");
-            e.printStackTrace();
-        }
-
-    }
 }

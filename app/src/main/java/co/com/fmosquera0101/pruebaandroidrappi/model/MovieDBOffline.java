@@ -8,9 +8,12 @@ import android.support.annotation.NonNull;
 @Entity
 public class MovieDBOffline {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @NonNull
+    private int idPrimaeryKey;
+
     private String id;
+    private String title;
     private String originalLanguage;
     private String overview;
     private String popularity;
@@ -19,9 +22,11 @@ public class MovieDBOffline {
     private String genres;
     private String duration;
 
-    public MovieDBOffline(String id, String originalLanguage, String overview, String popularity,
+    public MovieDBOffline(int idPrimaeryKey, String id, String title, String originalLanguage, String overview, String popularity,
                           String posterPath, String releaseDate, String genres, String duration){
+        this.idPrimaeryKey = idPrimaeryKey;
         this.id = id;
+        this.title = title;
         this.originalLanguage = originalLanguage;
         this.overview = overview;
         this.popularity = popularity;
@@ -32,8 +37,17 @@ public class MovieDBOffline {
 
     }
 
+    @NonNull
+    public int getIdPrimaeryKey() {
+        return idPrimaeryKey;
+    }
+
     public String getId() {
         return id;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public String getOriginalLanguage() {
