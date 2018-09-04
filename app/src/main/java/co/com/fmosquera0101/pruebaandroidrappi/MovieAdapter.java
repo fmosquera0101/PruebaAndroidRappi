@@ -2,13 +2,9 @@ package co.com.fmosquera0101.pruebaandroidrappi;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,18 +13,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
 
 import co.com.fmosquera0101.pruebaandroidrappi.model.Images;
 import co.com.fmosquera0101.pruebaandroidrappi.model.Movie;
 
-import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterHolder> {
 
@@ -52,9 +42,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public void onBindViewHolder(@NonNull MovieAdapterHolder holder, int position) {
         final Movie movie = movieList.get(position);
-        Glide.with(context).load(getImagePathUrl(movie))
-                .apply(RequestOptions.centerCropTransform())
-                .transition(withCrossFade())
+
+        Glide.with(context).load(getImagePathUrl(movie)).centerCrop().diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(holder.image_view_movie);
 
         holder.text_view_popularity.setText(String.valueOf(movie.popularity));

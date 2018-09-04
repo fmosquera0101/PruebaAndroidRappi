@@ -8,24 +8,20 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,17 +30,12 @@ import co.com.fmosquera0101.pruebaandroidrappi.ViewModel.MovideDBViewModel;
 import co.com.fmosquera0101.pruebaandroidrappi.model.Genre;
 import co.com.fmosquera0101.pruebaandroidrappi.model.Movie;
 import co.com.fmosquera0101.pruebaandroidrappi.model.MovieDBOffline;
-import co.com.fmosquera0101.pruebaandroidrappi.model.Movies;
-import co.com.fmosquera0101.pruebaandroidrappi.model.MoviesOffLine;
-import co.com.fmosquera0101.pruebaandroidrappi.model.SpokenLanguages;
-import co.com.fmosquera0101.pruebaandroidrappi.services.EnumSortBy;
 import co.com.fmosquera0101.pruebaandroidrappi.services.MovieDBDataServices;
 import co.com.fmosquera0101.pruebaandroidrappi.services.RetrofitClienInstance;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 public class MovieDetail extends AppCompatActivity {
 
@@ -157,8 +148,7 @@ public class MovieDetail extends AppCompatActivity {
 
     private void setViews(Movie movieFromId) {
         movieFromId.posterPath = movie.posterPath;
-        Glide.with(context).load(movieFromId.posterPath).apply(RequestOptions.centerCropTransform())
-                .transition(withCrossFade())
+        Glide.with(context).load(movieFromId.posterPath).diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(imageViewMovie);
         textViewTitleMovie.setText(movieFromId.title);
         textViewReleaseDate.setText(movieFromId.releaseDate);
@@ -181,8 +171,12 @@ public class MovieDetail extends AppCompatActivity {
             strbGenres.append(genre.name);
             strbGenres.append(", ");
         }
+
         String genres = strbGenres.toString().trim();
-        return genres.substring(0, genres.length() - 1);
+        if (genres.length() > 1){
+            return genres.substring(0, genres.length() - 1);
+        }
+        return genres;
     }
 
     @Override

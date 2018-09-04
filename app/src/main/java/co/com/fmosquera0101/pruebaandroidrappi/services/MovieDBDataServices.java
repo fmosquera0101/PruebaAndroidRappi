@@ -32,4 +32,8 @@ public interface MovieDBDataServices {
 
     @GET("/3/discover/movie")
     Call<Movies> getMovies();
+
+    @GET("/3/discover/movie")
+    Call<Movies> getMovies(@Query("primary_release_date.lte") String releaseDate,
+                           @Query("sort_by") EnumSortBy.SortBy sortBy);
 }

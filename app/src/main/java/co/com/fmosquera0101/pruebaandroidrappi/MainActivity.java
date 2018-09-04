@@ -2,19 +2,14 @@ package co.com.fmosquera0101.pruebaandroidrappi;
 
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,13 +18,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,11 +28,11 @@ import java.util.List;
 
 import co.com.fmosquera0101.pruebaandroidrappi.ViewModel.MovideDBViewModel;
 import co.com.fmosquera0101.pruebaandroidrappi.model.Configuration;
-import co.com.fmosquera0101.pruebaandroidrappi.model.Genre;
 import co.com.fmosquera0101.pruebaandroidrappi.model.Images;
 import co.com.fmosquera0101.pruebaandroidrappi.model.Movie;
 import co.com.fmosquera0101.pruebaandroidrappi.model.MovieDBOffline;
 import co.com.fmosquera0101.pruebaandroidrappi.model.Movies;
+import co.com.fmosquera0101.pruebaandroidrappi.services.EnumSortBy;
 import co.com.fmosquera0101.pruebaandroidrappi.services.MovieDBDataServices;
 import co.com.fmosquera0101.pruebaandroidrappi.services.RetrofitClienInstance;
 import retrofit2.Call;
@@ -80,14 +71,13 @@ public class MainActivity extends AppCompatActivity {
 
         movideDBViewModel = ViewModelProviders.of(this).get(MovideDBViewModel.class);
         movieDBDataServices = getMovieDBDataServices();
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         spinnerSetOnItemSelectedListener();
+
+        Call<Movies> callMovies = movieDBDataServices.getMovies(getReleaseDate(), EnumSortBy.SortBy.RELEASE_DATE_DESCENDING);
+        getMovies(callMovies, "", POPULAR, "");
+
     }
+
 
     @NonNull
     private List<Movie> getMovieListOffLine(@NonNull List<MovieDBOffline> movieDBOfflines) {
@@ -274,6 +264,10 @@ public class MainActivity extends AppCompatActivity {
 
     private MovieDBDataServices getMovieDBDataServices() {
         return RetrofitClienInstance.getRetrofitInstance().create(MovieDBDataServices.class);
+    }
+    private String getReleaseDate() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return simpleDateFormat.format(Calendar.getInstance().getTime());
     }
 
 }

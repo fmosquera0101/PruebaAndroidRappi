@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
-            android:background="@android:color/holo_blue_light" />
+            android:background="@android:color/background_light" />
 
         <FrameLayout
             android:id="@+id/popularity_rating_frame_layout"
