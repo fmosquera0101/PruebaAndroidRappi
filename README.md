@@ -37,7 +37,8 @@ realizar pruebas unitarias a cada metodo que se desarrolle
 no tener metodos ni clases demasiado grande que nos dificulten realizar refactor
 desarrollar nuestro código de modo que sea autocomentado (selfcommented)
 ___
-#Futuras mejoras
+#Futuras mejoras:
+
 Implementar un Android Service para descargar la informacion y las imagenes de las peliculas para las consultas offline(Cache)
 Implementar paginacion en la consulta de las peliculas
 Realizar pruebas unitarias
