@@ -20,4 +20,19 @@ public interface MovieDBOfflineDAO {
     @Query("SELECT * FROM MovieDBOffline")
     LiveData<List<MovieDBOffline>> getAllMoviesOffline();
 
+    @Query("SELECT * FROM MovieDBOffline where isTopRated=:isTopRated")
+    LiveData<List<MovieDBOffline>> getAllTopRatedMoviesOffline(String isTopRated);
+
+    @Query("SELECT * FROM MovieDBOffline where isPopular=:isPopular")
+    LiveData<List<MovieDBOffline>> getAllPopularMoviesOffline(String isPopular);
+
+    @Query("SELECT * FROM MovieDBOffline where isUpcomming=:isUpcomming")
+    LiveData<List<MovieDBOffline>> getAllUpComingMoviesOffline(String isUpcomming);
+
+    @Query("SELECT * FROM MovieDBOffline where id=:id")
+    LiveData<MovieDBOffline> getByIdMoviesOffline(String id);
+
+    @Query("UPDATE MovieDBOffline SET genres = :genres, duration=:duration where id=:id")
+    void updateByIdMovieDBOffline(String genres, String duration, String id);
+
 }

@@ -120,6 +120,10 @@ public class Movie implements Serializable{
     @JsonProperty("belongs_to_collection")
     public BelongToCollection  belongsToCollection;
 
+    public String isTopRated;
+    public String isPopular;
+    public String isUpcomming;
+
 
 
 

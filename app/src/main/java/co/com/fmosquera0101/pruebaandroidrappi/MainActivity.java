@@ -1,5 +1,6 @@
 package co.com.fmosquera0101.pruebaandroidrappi;
 
+import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
@@ -57,8 +58,13 @@ public class MainActivity extends AppCompatActivity {
     private Spinner spinner;
     private TextView textViewErroNetWork;
     private MovieDBDataServices movieDBDataServices;
+    private static final String TOP_RATED = "Top rated";
+    private static final String POPULAR= "Popular";
+    private static final String UPCOMING = "Upcoming";
 
-
+    private ConnectivityManager connectivityManager;
+    private NetworkInfo networkInfo;
+    private  Boolean isConnected;
     private MovideDBViewModel movideDBViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,75 +76,110 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.RecyclerView_activity_main);
         spinner = (Spinner) findViewById(R.id.spinner_nav);
         textViewErroNetWork = (TextView) findViewById(R.id.text_view_not_network_conn_activity_main);
-
         spinner.setAdapter(getAdapter());
+
         movideDBViewModel = ViewModelProviders.of(this).get(MovideDBViewModel.class);
-
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        Boolean isConnected = networkInfo != null && networkInfo.isConnectedOrConnecting();
-        if(isConnected){
-            movieDBDataServices = getMovieDBDataServices();
-            Call<Movies> callMovies = movieDBDataServices.getPopularMovies();
-            getMovies(callMovies);
-            spinnerSetOnItemSelectedListener();
-
-        }else{
-
-            movideDBViewModel.getListMovieDBOffline().observe(this, new Observer<List<MovieDBOffline>>() {
-                @Override
-                public void onChanged(@Nullable List<MovieDBOffline> movieDBOfflines) {
-                    if(null != movieDBOfflines && movieDBOfflines.size() > 0){
-                        List<Movie> listMovie = new ArrayList<Movie>();
-                        for (MovieDBOffline movieDBOffline: movieDBOfflines){
-                            Movie movie = new Movie();
-                            movie.id = movieDBOffline.getId();
-                            movie.title = movieDBOffline.getTitle();
-                            movie.originalLanguage =movieDBOffline.getOriginalLanguage();
-                            movie.overview = movieDBOffline.getOverview();
-                            movie.popularity = Float.parseFloat(movieDBOffline.getPopularity());
-                            movie.posterPath = movieDBOffline.getPosterPath();
-                            //movie.genres = movieDBOffline.getGenres();
-                            movie.runtime = Integer.parseInt(movieDBOffline.getDuration());
-                            listMovie.add(movie);
-
-                        }
-                        setAdapterRecyclerView(listMovie);
-                    }else {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        textViewErroNetWork.setVisibility(View.VISIBLE);
-                    }
-
-                }
-            });
-
-        }
-
-
-
-
-
+        movieDBDataServices = getMovieDBDataServices();
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        spinnerSetOnItemSelectedListener();
+    }
+
+    @NonNull
+    private List<Movie> getMovieListOffLine(@NonNull List<MovieDBOffline> movieDBOfflines) {
+        List<Movie> listMovie = new ArrayList<Movie>();
+        for (MovieDBOffline movieDBOffline: movieDBOfflines){
+            Movie movie = new Movie();
+            movie.id = movieDBOffline.getId();
+            movie.title = movieDBOffline.getTitle();
+            movie.originalLanguage =movieDBOffline.getOriginalLanguage();
+            movie.overview = movieDBOffline.getOverview();
+            movie.popularity = Float.parseFloat(movieDBOffline.getPopularity());
+            movie.posterPath = movieDBOffline.getPosterPath();
+            //movie.genres = movieDBOffline.getGenres();
+            movie.runtime = Integer.parseInt(movieDBOffline.getDuration());
+            listMovie.add(movie);
+
+        }
+        return listMovie;
+    }
+
     private void spinnerSetOnItemSelectedListener() {
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                networkInfo = connectivityManager.getActiveNetworkInfo();
+                isConnected = networkInfo != null && networkInfo.isConnectedOrConnecting();
+
                 String filterSelect = (String)adapterView.getItemAtPosition(i);
                 Call<Movies> callMovies = null;
                 switch (filterSelect){
-                    case"Popular":
-                        callMovies = movieDBDataServices.getPopularMovies();
-                        getMovies(callMovies);
+                    case POPULAR:
+                        if (isConnected) {
+                            callMovies = movieDBDataServices.getPopularMovies();
+                            getMovies(callMovies, "", POPULAR, "");
+                        }else{
+                            movideDBViewModel.getListAllPopularMovies(POPULAR).observe((LifecycleOwner) context, new Observer<List<MovieDBOffline>>() {
+                                @Override
+                                public void onChanged(@Nullable List<MovieDBOffline> movieDBOfflines) {
+
+                                    if(null != movieDBOfflines && movieDBOfflines.size() > 0){
+                                        List<Movie> listMovie = getMovieListOffLine(movieDBOfflines);
+                                        setAdapterRecyclerView(listMovie);
+                                    }else {
+                                        progressBar.setVisibility(View.INVISIBLE);
+                                        textViewErroNetWork.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                            });
+                        }
                         break;
-                    case "Top rated":
-                        callMovies = movieDBDataServices.getTopRatedMovies();
-                        getMovies(callMovies);
+                    case TOP_RATED:
+                        if (isConnected) {
+                            callMovies = movieDBDataServices.getTopRatedMovies();
+                            getMovies(callMovies, TOP_RATED, "", "");
+                        }else{
+                            movideDBViewModel.getListAllTopRatedMovies(TOP_RATED).observe((LifecycleOwner) context, new Observer<List<MovieDBOffline>>() {
+                                @Override
+                                public void onChanged(@Nullable List<MovieDBOffline> movieDBOfflines) {
+
+                                    if(null != movieDBOfflines && movieDBOfflines.size() > 0){
+                                        List<Movie> listMovie = getMovieListOffLine(movieDBOfflines);
+                                        setAdapterRecyclerView(listMovie);
+                                    }else {
+                                        progressBar.setVisibility(View.INVISIBLE);
+                                        textViewErroNetWork.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                            });
+                        }
                         break;
-                    case "Upcoming":
-                        callMovies = movieDBDataServices.getUpcomingMovies();
-                        getMovies(callMovies);
+                    case UPCOMING:
+                        if (isConnected) {
+                            callMovies = movieDBDataServices.getUpcomingMovies();
+                            getMovies(callMovies, "", "", UPCOMING);
+                        }else{
+                            movideDBViewModel.getListAllUpcomingMovies(UPCOMING).observe((LifecycleOwner) context, new Observer<List<MovieDBOffline>>() {
+                                @Override
+                                public void onChanged(@Nullable List<MovieDBOffline> movieDBOfflines) {
+
+                                    if(null != movieDBOfflines && movieDBOfflines.size() > 0){
+                                        List<Movie> listMovie = getMovieListOffLine(movieDBOfflines);
+                                        setAdapterRecyclerView(listMovie);
+                                    }else {
+                                        progressBar.setVisibility(View.INVISIBLE);
+                                        textViewErroNetWork.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                            });
+                        }
                         break;
 
                 }
@@ -158,12 +199,18 @@ public class MainActivity extends AppCompatActivity {
         return adapterSpinner;
     }
 
-    private void getMovies(Call<Movies> callMovies) {
+    private void getMovies(Call<Movies> callMovies, final String isTopRated, final String isPopular, final String isUpcomming) {
         callMovies.enqueue(new Callback<Movies>() {
             @Override
             public void onResponse(Call<Movies> call, Response<Movies> response) {
 
-                movies = response.body().movies;
+                movies = new ArrayList<Movie>();
+                for (Movie movie: response.body().movies) {
+                    movie.isPopular = isPopular;
+                    movie.isTopRated = isTopRated;
+                    movie.isUpcomming = isUpcomming;
+                    movies.add(movie);
+                }
                 setAdapterRecyclerView(movies);
                 progressBar.setVisibility(View.INVISIBLE);
 
@@ -177,8 +224,11 @@ public class MainActivity extends AppCompatActivity {
                             String.valueOf(movie.popularity),
                             movie.posterPath,
                             movie.releaseDate,
-                            "test",
-                            String.valueOf(movie.runtime)
+                            "",
+                            String.valueOf(movie.runtime),
+                            isTopRated,
+                            isPopular,
+                            isUpcomming
                     );
                     movideDBViewModel.insert(movieDBOffline);
                 }
@@ -219,24 +269,11 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(movieAdapter);
-    }
-
-    private String getReleaseDate() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        return simpleDateFormat.format(Calendar.getInstance().getTime());
+        movieAdapter.notifyDataSetChanged();
     }
 
     private MovieDBDataServices getMovieDBDataServices() {
         return RetrofitClienInstance.getRetrofitInstance().create(MovieDBDataServices.class);
-    }
-    private String getStringGenres(Movie movieFromId) {
-        StringBuilder strbGenres = new StringBuilder();
-        for (Genre genre:movieFromId.genres) {
-            strbGenres.append(genre.name);
-            strbGenres.append(", ");
-        }
-        String genres = strbGenres.toString().trim();
-        return genres.substring(0, genres.length() - 1);
     }
 
 }
