@@ -73,8 +73,6 @@ public class MainActivity extends AppCompatActivity {
         movieDBDataServices = getMovieDBDataServices();
         spinnerSetOnItemSelectedListener();
 
-        Call<Movies> callMovies = movieDBDataServices.getMovies(getReleaseDate(), EnumSortBy.SortBy.RELEASE_DATE_DESCENDING);
-        getMovies(callMovies, "", POPULAR, "");
 
     }
 
