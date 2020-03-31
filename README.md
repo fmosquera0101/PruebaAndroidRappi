@@ -1,4 +1,4 @@
-# PruebaAndroidRappi
+# Movie List app
 
 La aplicacion esta compuesta por las siguientes capas:
 model
